@@ -29,14 +29,14 @@
 
 			function tickEvent(balloon) {
 				return function(event) {
-					balloon.y = balloon.y - event.delta/8;
+					balloon.y = balloon.y - event.delta / 8;
 					if(balloon.y < 0) {
-						balloon.y = stage.canvas.height;
+						stage.removeChild(circle);
 					}
 					stage.update(event);
 				}
 			}
-			createjs.Ticker.addEventListener("tick", tickEvent(circle));;
+			createjs.Ticker.addEventListener("tick", tickEvent(circle));
 			return circle;
 		}
 
@@ -46,7 +46,7 @@
 			rect.y = stage.canvas.height - 100;
 
 			createjs.Ticker.addEventListener("tick", function(event) {
-				rect.x = rect.x - event.delta/20;
+				rect.x = rect.x - event.delta / 20;
 				if(rect.x < 0) {
 					rect.x = stage.canvas.width;
 				}
@@ -57,9 +57,12 @@
 		}
 	</script>
 	<script type="text/javascript">
-				var balloon = createBalloon(50, stage.canvas.height);
-				var balloon1 = createBalloon(150, stage.canvas.height);
-				var balloon2 = createBalloon(250, stage.canvas.height);
+		createjs.Ticker.addEventListener("tick", function(event) {
+			var time = createjs.Ticker.getTime();
+			if(time % 100 > 90) {
+				createBalloon(Math.random() * 300, stage.canvas.height);
+			}
+		});
 		createTree();
 	</script>
 
