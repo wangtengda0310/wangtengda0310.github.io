@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+	</head>
+
+	<body>
+		<canvas id="demoCanvas" width="300" height="500"></canvas>
+	</body>
+
+	<script type="text/javascript">
+		createjs.Ticker.setFPS(60);
+	</script>
+	<script>
+		var stage = new createjs.Stage("demoCanvas");
+
+		function createBalloon(x, y) {
+			var circle = new createjs.Shape();
+			circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 10);
+			circle.x = x;
+			circle.y = y;
+			circle.addEventListener("click", function(event) {
+				stage.removeChild(circle);
+			});
+			stage.addChild(circle);
+
+			function tickEvent(balloon) {
+				return function(event) {
+					balloon.y = balloon.y - event.delta/8;
+					if(balloon.y < 0) {
+						balloon.y = stage.canvas.height;
+					}
+					stage.update(event);
+				}
+			}
+			createjs.Ticker.addEventListener("tick", tickEvent(circle));;
+			return circle;
+		}
+
+		function createTree() {
+			var rect = new createjs.Shape();
+			rect.graphics.beginFill("Green").drawRect(0, 0, 10, 100);
+			rect.y = stage.canvas.height - 100;
+
+			createjs.Ticker.addEventListener("tick", function(event) {
+				rect.x = rect.x - event.delta/20;
+				if(rect.x < 0) {
+					rect.x = stage.canvas.width;
+				}
+				stage.update(event);
+			});
+			stage.addChild(rect);
+			return rect;
+		}
+	</script>
+	<script type="text/javascript">
+				var balloon = createBalloon(50, stage.canvas.height);
+				var balloon1 = createBalloon(150, stage.canvas.height);
+				var balloon2 = createBalloon(250, stage.canvas.height);
+		createTree();
+	</script>
+
+</html>
