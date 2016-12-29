@@ -18,27 +18,41 @@
 	<script>
 		var stage = new createjs.Stage("demoCanvas");
 
-		function createBalloon(x, y) {
-			var circle = new createjs.Shape();
-			circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-			circle.x = x;
-			circle.y = y;
-			circle.addEventListener("click", function(event) {
-				stage.removeChild(circle);
-				console.log(1);
-			});
-			stage.addChild(circle);
-
-			function tickEvent(balloon) {
-				return function(event) {
-					balloon.y = balloon.y - event.delta / 8;
-					if(balloon.y < 0) {
-						stage.removeChild(circle);
+		function b(x, y, img) {
+			var balloon;
+			if(!img) {
+				var circle = new createjs.Shape();
+				circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+				var balloon = circle;
+			} else {
+				var balloonSprite = new createjs.SpriteSheet({
+					framerate: 2,
+					"images": [img],
+					"frames": {
+						"height": 200,
+						"width": 100,
+						"regX": 50,
+						"regY": 100
+					},
+					"animations": {
+						"fly": [0, 3, "fly", 1.5]
 					}
-				}
+				});
+				var balloon = new createjs.Sprite(balloonSprite, "fly");
 			}
-			createjs.Ticker.addEventListener("tick", tickEvent(circle));
-			return circle;
+			balloon.x = x;
+			balloon.y = y;
+			stage.addChild(balloon);
+			balloon.addEventListener("click", function(event) {
+				stage.removeChild(balloon);
+			});
+			createjs.Ticker.addEventListener("tick", function(event) {
+				balloon.y = balloon.y - event.delta / 8;
+				if(balloon.y < 0) {
+					stage.removeChild(balloon);
+				}
+			});
+
 		}
 	</script>
 	<script type="text/javascript">
@@ -62,6 +76,9 @@
 		}, {
 			src: "hill2.png",
 			id: "hill2"
+		}, {
+			src: "balloon.png",
+			id: "balloon"
 		}];
 
 		loader = new createjs.LoadQueue(false);
@@ -106,16 +123,15 @@
 			grant.y = 35;
 
 			stage.addChild(sky, hill, hill2, ground, grant);
-			stage.addEventListener("stagemousedown", handleJumpStart);
+			stage.addEventListener("stagemousedown",
+				function() {
+					grant.gotoAndPlay("jump");
+					b(Math.random() * w, stage.canvas.height, loader.getResult("balloon"));
+				});
 
 			createjs.Ticker.timingMode = createjs.Ticker.RAF;
 			createjs.Ticker.addEventListener("tick", tick);
 
-		}
-
-		function handleJumpStart() {
-			grant.gotoAndPlay("jump");
-			createBalloon(Math.random() * w, stage.canvas.height);
 		}
 
 		function tick(event) {
@@ -138,7 +154,7 @@
 			stage.update(event);
 		}
 	</script>
-点击产生一个气球
-<br />
-点击气球使其消失
+	<br /> 点击产生一个气球
+	<br /> 点击气球使其消失
+
 </html>
