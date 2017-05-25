@@ -8,8 +8,14 @@
 	</head>
 
 	<body style="background-color:#555;">
-		<canvas style="border:solid 1px" id="demoCanvas" width="500" height="800">asdf</canvas>
+		<canvas style="border:solid 1px" id="demoCanvas"></canvas>
 	</body>
+	<script>
+		var h=window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+		document.getElementById("demoCanvas").height=h;
+		document.getElementById("demoCanvas").width=h/2;
+	</script>
 		<script type="text/javascript">
 			/*!
 * @license EaselJS
